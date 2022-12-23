@@ -4,7 +4,7 @@ import onnxruntime as rt
 import numpy as np
 import cv2
 from modules import script_callbacks
-`
+
 def on_ui_tabs():
     providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
     model_path = huggingface_hub.hf_hub_download("skytnt/anime-seg", "isnetis.onnx")
