@@ -10,18 +10,6 @@ def on_ui_tabs():
     model_path = huggingface_hub.hf_hub_download("skytnt/anime-seg", "isnetis.onnx")
     rmbg_model = rt.InferenceSession(model_path, providers=providers)
 
-    with gr.Blocks(analytics_enabled=False) as background_remover:
-        with gr.Row():
-            with gr.Column():
-                input_img = gr.Image(label="input image")
-                examples_data = [[f"examples/{x:02d}.jpg"] for x in range(1, 4)]
-                examples = gr.Dataset(components=[input_img], samples=examples_data)
-            run_btn = gr.Button(variant="primary")
-            output_mask = gr.Image(label="mask")
-            output_img = gr.Image(label="result", image_mode="RGBA")
-        examples.click(lambda x: x[0], [examples], [input_img])
-        run_btn.click(rmbg_fn, [input_img], [output_mask, output_img])
-
     def get_mask(img, s=1024):
         img = (img / 255).astype(np.float32)
         h, w = h0, w0 = img.shape[:-1]
@@ -45,6 +33,19 @@ def on_ui_tabs():
         img = np.concatenate([img, mask], axis=2, dtype=np.uint8)
         mask = mask.repeat(3, axis=2)
         return mask, img
+        
+    with gr.Blocks(analytics_enabled=False) as background_remover:
+        with gr.Row():
+            with gr.Column():
+                input_img = gr.Image(label="input image")
+                examples_data = [[f"examples/{x:02d}.jpg"] for x in range(1, 4)]
+                examples = gr.Dataset(components=[input_img], samples=examples_data)
+            run_btn = gr.Button(variant="primary")
+            output_mask = gr.Image(label="mask")
+            output_img = gr.Image(label="result", image_mode="RGBA")
+        examples.click(lambda x: x[0], [examples], [input_img])
+        run_btn.click(rmbg_fn, [input_img], [output_mask, output_img])
+
     return (background_remover, "Background Remover", "background_remover"),
 
 script_callbacks.on_ui_tabs(on_ui_tabs)
