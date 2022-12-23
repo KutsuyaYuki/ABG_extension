@@ -3,7 +3,7 @@ import huggingface_hub
 import onnxruntime as rt
 import numpy as np
 import cv2
-from modules import script_callbacks`
+from modules import script_callbacks
 `
 def on_ui_tabs():
     providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
