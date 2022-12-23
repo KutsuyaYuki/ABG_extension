@@ -11,3 +11,6 @@ if not launch.is_installed("opencv-python"):
 
 if not launch.is_installed("numpy"):
     launch.run_pip("install numpy", "requirements for Anime Background Remover")
+
+if not launch.is_installed("Pillow"):
+    launch.run_pip("install Pillow", "requirements for Anime Background Remover")
