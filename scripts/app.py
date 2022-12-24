@@ -44,7 +44,7 @@ class Script(scripts.Script):
     is_txt2img = False
 
     def title(self):
-        return "BG Remover"
+        return "ABG Remover"
 
     def show(self, is_img2img):
         return True
