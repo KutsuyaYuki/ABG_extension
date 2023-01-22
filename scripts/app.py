@@ -56,8 +56,8 @@ class Script(scripts.Script):
             img = im.fromarray(nimg)
             mask = im.fromarray(nmask)
             
-            images.save_image(mask, p.outpath_samples, "mask_", proc.seed + i, proc.prompt, opts.samples_format, info= proc.info, p=p)
-            images.save_image(img, p.outpath_samples, "img_", proc.seed + i, proc.prompt, opts.samples_format, info= proc.info, p=p)
+            images.save_image(mask, p.outpath_samples, "mask_", proc.seed + i, proc.prompt, "png", info= proc.info, p=p)
+            images.save_image(img, p.outpath_samples, "img_", proc.seed + i, proc.prompt, "png", info= proc.info, p=p)
             proc.images.append(mask)
             proc.images.append(img)
         return proc
