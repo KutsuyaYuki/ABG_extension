@@ -90,6 +90,8 @@ class Script(scripts.Script):
 
     # Function to run the script
     def run(self, p, only_save_background_free_pictures):
+        if only_save_background_free_pictures:      
+            p.do_not_save_samples = True
         # Make a process_images Object
         proc = process_images(p)
         # Go through all the images
@@ -108,4 +110,5 @@ class Script(scripts.Script):
                 proc.images.append(img)
             else:
                 proc.images[i] = img
+                images.save_image(img, p.outpath_samples, "",proc.seed, proc.prompt, "png", info=proc.info, p=p)
         return proc
