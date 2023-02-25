@@ -79,17 +79,18 @@ class Script(scripts.Script):
 
     def ui(self, is_img2img):
 
-        with gr.Row():
+        with gr.Column():
             only_save_background_free_pictures = gr.Checkbox(label='Only save background free pictures')
+            do_not_auto_save = gr.Checkbox(label='Do not auto save')
 
-        return [only_save_background_free_pictures]
+        return [only_save_background_free_pictures, do_not_auto_save]
 
     # Function to show the script
     def show(self, is_img2img):
         return True
 
     # Function to run the script
-    def run(self, p, only_save_background_free_pictures):
+    def run(self, p, only_save_background_free_pictures, do_not_auto_save):
         # If only_save_background_free_pictures is true, set do_not_save_samples to true
         if only_save_background_free_pictures:      
             p.do_not_save_samples = True
@@ -117,19 +118,27 @@ class Script(scripts.Script):
             # If we are saving all images, save the mask and the image
             if not only_save_background_free_pictures:
                 mask = im.fromarray(nmask)
+                # Dot not save the new images if checkbox is checked
+                if not do_not_auto_save:
                 # Save the new images
-                images.save_image(mask, outpath, "mask_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
-                images.save_image(img, outpath, "img_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
+                    images.save_image(mask, outpath, "mask_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
+                    images.save_image(img, outpath, "img_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
                 # Add the images to the proc object
                 proc.images.append(mask)
                 proc.images.append(img)
             # If we are only saving background-free images, save the image and replace it in the proc object
             else:
                 proc.images[i] = img
+
+            # Check if automatic saving is enabled
+            if not do_not_auto_save:
+                # Check if the image is the first one and has a grid
                 if has_grid and i == 0:
+                    # Save the image
                     images.save_image(img, p.outpath_grids, "grid", p.all_seeds[0], p.all_prompts[0], opts.grid_format, info=proc.info, short_filename=not opts.grid_extended_filename, p=p)
                 else:
+                    # Save the image
                     images.save_image(img, outpath, "",proc.seed, proc.prompt, "png", info=proc.info, p=p)
-        
+
         # Return the proc object
         return proc
