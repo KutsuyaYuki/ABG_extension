@@ -90,25 +90,46 @@ class Script(scripts.Script):
 
     # Function to run the script
     def run(self, p, only_save_background_free_pictures):
+        # If only_save_background_free_pictures is true, set do_not_save_samples to true
         if only_save_background_free_pictures:      
             p.do_not_save_samples = True
-        # Make a process_images Object
+        
+        # Create a process_images object
         proc = process_images(p)
-        # Go through all the images
+        
+        has_grid = False
+
+        unwanted_grid_because_of_img_count = len(proc.images) < 2 and opts.grid_only_if_multiple
+        if (opts.return_grid or opts.grid_save) and not p.do_not_save_grid and not unwanted_grid_because_of_img_count:
+            has_grid = True
+
+        # Loop through all the images in proc
         for i in range(len(proc.images)):
-            # Seperate the Background from the foreground
+            # Separate the background from the foreground
             nmask, nimg = rmbg_fn(np.array(proc.images[i]))
-            # Change the image back to an image format
+            
+            # Convert the image back to a format that can be saved
             img = im.fromarray(nimg)
-            if not only_save_background_free_pictures:      
+            
+            # determine output path
+            outpath = p.outpath_grids if has_grid and i == 0 else p.outpath_samples
+
+            # If we are saving all images, save the mask and the image
+            if not only_save_background_free_pictures:
                 mask = im.fromarray(nmask)
                 # Save the new images
-                images.save_image(mask, p.outpath_samples, "mask_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
-                images.save_image(img, p.outpath_samples, "img_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
+                images.save_image(mask, outpath, "mask_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
+                images.save_image(img, outpath, "img_",proc.seed + i, proc.prompt, "png", info=proc.info, p=p)
                 # Add the images to the proc object
                 proc.images.append(mask)
                 proc.images.append(img)
+            # If we are only saving background-free images, save the image and replace it in the proc object
             else:
                 proc.images[i] = img
-                images.save_image(img, p.outpath_samples, "",proc.seed, proc.prompt, "png", info=proc.info, p=p)
+                if has_grid and i == 0:
+                    images.save_image(img, p.outpath_grids, "grid", p.all_seeds[0], p.all_prompts[0], opts.grid_format, info=proc.info, short_filename=not opts.grid_extended_filename, p=p)
+                else:
+                    images.save_image(img, outpath, "",proc.seed, proc.prompt, "png", info=proc.info, p=p)
+        
+        # Return the proc object
         return proc
