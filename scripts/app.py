@@ -23,11 +23,12 @@ rmbg_model = rt.InferenceSession(model_path, providers=providers)
 
 # Function to get mask
 
-
 def get_mask(img, s=1024):
     #Resize the img to a square shape with dimension s
     #Convert img pixel values from integers 0-255 to float 0-1
     img = (img / 255).astype(np.float32)
+    # get the amount of dimensions of img
+    dim = img.shape[2]
     #Get height and width of the image 
     h, w = h0, w0 = img.shape[:-1]
     #IF height is greater than width, set h as s and w as s*width/height
@@ -36,7 +37,7 @@ def get_mask(img, s=1024):
     #Calculate padding for height and width
     ph, pw = s - h, s - w
     #Create a 1024x1024x3 array of 0's   
-    img_input = np.zeros([s, s, 3], dtype=np.float32)
+    img_input = np.zeros([s, s, dim], dtype=np.float32)
     #Resize the original image to (w,h) and then pad with the calculated ph,pw
     img_input[ph // 2:ph // 2 + h, pw //
               2:pw // 2 + w] = cv2.resize(img, (w, h))
