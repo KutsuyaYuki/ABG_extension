@@ -29,6 +29,10 @@ def get_mask(img, s=1024):
     img = (img / 255).astype(np.float32)
     # get the amount of dimensions of img
     dim = img.shape[2]
+    # Convert the input image to RGB format if it has an alpha channel
+    if dim == 4:
+        img = img[..., :3]
+        dim = 3
     #Get height and width of the image 
     h, w = h0, w0 = img.shape[:-1]
     #IF height is greater than width, set h as s and w as s*width/height
