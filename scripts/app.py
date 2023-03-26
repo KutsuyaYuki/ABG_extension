@@ -10,7 +10,7 @@ import onnxruntime as rt
 import copy
 import numpy as np
 import cv2
-from PIL import Image as im
+from PIL import Image as im, ImageDraw
 
 
 # Declare Execution Providers
@@ -87,15 +87,19 @@ class Script(scripts.Script):
         with gr.Column():
             only_save_background_free_pictures = gr.Checkbox(label='Only save background free pictures')
             do_not_auto_save = gr.Checkbox(label='Do not auto save')
+            with gr.Row():
+                custom_background = gr.Checkbox(label='Custom Background')
+                custom_background_color = gr.ColorPicker(label='Background Color', default='#ff0000')
 
-        return [only_save_background_free_pictures, do_not_auto_save]
+        return [only_save_background_free_pictures, do_not_auto_save, custom_background, custom_background_color]
+    
 
     # Function to show the script
     def show(self, is_img2img):
         return True
 
     # Function to run the script
-    def run(self, p, only_save_background_free_pictures, do_not_auto_save):
+    def run(self, p, only_save_background_free_pictures, do_not_auto_save, custom_background, custom_background_color):
         # If only_save_background_free_pictures is true, set do_not_save_samples to true
         if only_save_background_free_pictures:      
             p.do_not_save_samples = True
@@ -114,9 +118,21 @@ class Script(scripts.Script):
             # Separate the background from the foreground
             nmask, nimg = rmbg_fn(np.array(proc.images[i]))
             
-            # Convert the image back to a format that can be saved
+            # Convert the image back to a format that can be saved 
             img = im.fromarray(nimg)
             
+            # If custom_background is true, set the background color to the color selected by the user 
+            if custom_background:
+                # Create a new image with the same size as the original image
+                background = im.new('RGBA', img.size, custom_background_color)
+
+                # Draw a colored rectangle onto the new image
+                draw = ImageDraw.Draw(background)
+                draw.rectangle([(0, 0), img.size], fill=custom_background_color)
+
+                # Merge the two images
+                img = im.alpha_composite(background, img)
+
             # determine output path
             outpath = p.outpath_grids if has_grid and i == 0 else p.outpath_samples
 
