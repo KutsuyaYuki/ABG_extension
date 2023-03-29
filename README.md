@@ -1,6 +1,6 @@
-<p align="center">
- # ABG extension
-</p>
+<h3 align="center">
+<b>ABG extension</b>
+</h3>
 
 <p align="center">
 	<a href="https://github.com/KutsuyaYuki/ABG_extension/stargazers"><img src="https://img.shields.io/github/stars/KutsuyaYuki/ABG_extension?style=for-the-badge"></a>
