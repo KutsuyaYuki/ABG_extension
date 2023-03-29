@@ -1,4 +1,12 @@
-# ABG_extension
+<p align="center">
+ # ABG extension
+</p>
+
+<p align="center">
+	<a href="https://github.com/KutsuyaYuki/ABG_extension/stargazers"><img src="https://img.shields.io/github/stars/KutsuyaYuki/ABG_extension?style=for-the-badge"></a>
+	<a href="https://github.com/KutsuyaYuki/ABG_extension/issues"><img src="https://img.shields.io/github/issues/KutsuyaYuki/ABG_extension?style=for-the-badge"></a>
+	<a href="https://github.com/KutsuyaYuki/ABG_extension/contributors"><img src="https://img.shields.io/github/last-commit/KutsuyaYuki/ABG_extension?style=for-the-badge"></a>
+</p>
 
 ## Installation
 
