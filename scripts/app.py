@@ -121,7 +121,13 @@ class Script(scripts.Script):
             # Separate the background from the foreground
             nmask, nimg = rmbg_fn(np.array(proc.images[i]))
 
-            # Convert the image back to a format that can be saved
+            # Check the number of channels in the nimg array, select only the first 3 or 4 channels
+            num_channels = nimg.shape[2]
+            if num_channels > 4:
+                nimg = nimg[:, :, :4]
+                
+            # Ensure the data type is uint8 and convert the image back to a format that can be saved
+            nimg = nimg.astype(np.uint8)
             img = im.fromarray(nimg)
 
             # If only_save_background_free_pictures is true, check if the image has a background
